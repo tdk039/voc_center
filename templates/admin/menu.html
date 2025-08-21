@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Quản trị Thực đơn</h3>
+
+<ul class="nav nav-tabs mb-3" id="menuTabs" role="tablist">
+  <li class="nav-item">
+    <button class="nav-link active" id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button">Thực đơn tuần</button>
+  </li>
+  <li class="nav-item">
+    <button class="nav-link" id="special-tab" data-bs-toggle="tab" data-bs-target="#special" type="button">Thực đơn đặc biệt</button>
+  </li>
+</ul>
+
+<div class="tab-content">
+  <!-- 📌 Thực đơn tuần -->
+  <div class="tab-pane fade show active" id="weekly">
+    <h5 class="mb-3">Upload ảnh thực đơn tuần</h5>
+    <form method="post" action="{{ url_for('admin_weekly_menu') }}" enctype="multipart/form-data" class="mb-3">
+      <div class="mb-3">
+        <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(event)" required>
+      </div>
+      <div class="mb-3">
+        <img id="preview" src="{% if weekly_menu %}/static/{{ weekly_menu.image_path }}{% endif %}" 
+             alt="Preview" class="img-fluid rounded" style="max-height:300px;">
+      </div>
+      <button type="submit" class="btn btn-success">Cập nhật</button>
+    </form>
+  </div>
+
+  <!-- 📌 Thực đơn đặc biệt -->
+  <div class="tab-pane fade" id="special">
+    <h5 class="mb-3">Quản lý thực đơn đặc biệt</h5>
+    <form method="post" action="{{ url_for('admin_special_menu_add') }}" enctype="multipart/form-data" class="row g-2 mb-4">
+      <div class="col-md-3"><input class="form-control" name="name" placeholder="Tên món" required></div>
+      <div class="col-md-3"><input class="form-control" name="description" placeholder="Mô tả"></div>
+      <div class="col-md-3"><input type="file" name="image" class="form-control" accept="image/*"></div>
+      <div class="col-md-3"><button class="btn btn-success">Thêm món</button></div>
+    </form>
+
+    <div class="row">
+      {% for m in special_menus %}
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          {% if m.image_path %}
+          <img src="/static/{{ m.image_path }}" class="card-img-top" style="aspect-ratio:16/9; object-fit:cover;">
+          {% endif %}
+          <div class="card-body">
+            <h6 class="card-title">{{ m.name }}</h6>
+            <p class="small text-muted">{{ m.description }}</p>
+            <a href="{{ url_for('admin_special_menu_delete', id=m.id) }}" 
+               class="btn btn-sm btn-danger"
+               onclick="return confirm('Xoá món này?');">Xoá</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+function previewImage(event) {
+  var output = document.getElementById('preview');
+  output.src = URL.createObjectURL(event.target.files[0]);
+}
+</script>
+{% endblock %}

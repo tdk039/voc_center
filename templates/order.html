@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("order") }}</h3>
+
+<form method="post" class="row g-3 mb-4">
+  <!-- Hàng 1: 3 cột bằng nhau -->
+  <div class="col-md-4">
+    <label class="form-label">{{ tr("name") }}</label>
+    <input class="form-control" name="name" required>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">{{ tr("employee_code") }}</label>
+    <input class="form-control" name="employee_code">
+  </div>
+
+  <!-- <div class="col-md-4">
+    <label class="form-label" display="none">{{ tr("place") }}</label>
+    <select name="location_id" class="form-select" display="none">
+      {% for l in locations %}
+        <option display="none" value="{{ l.id }}">{{ l.name }}</option>
+      {% endfor %}
+    </select>
+  </div> -->
+  <input type="hidden" name="location_id" value="{{ locations[0].id }}">
+
+  <!-- Hàng 2: Món (rộng) + Ngày đăng ký (nhỏ) -->
+  <div class="col-md-4">
+    <label class="form-label">Món</label>
+    <select name="item_id" class="form-select">
+      {% for i in items %}
+        <option value="{{ i.id }}">{{ i.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label">Ngày đăng ký</label>
+    <input type="date" name="order_date"
+           class="form-control form-control-sm"
+           min="{{ today }}" value="{{ today }}">
+  </div>
+
+  <!-- Hàng 3: nút -->
+  <div class="col-12">
+    <button class="btn btn-success">Đăng ký</button>
+  </div>
+</form>
+
+{% endblock %}

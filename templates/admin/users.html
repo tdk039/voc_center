@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("users") }}</h3>
+<form method="post" class="row g-2 mb-4">
+  <div class="col-md-3"><input class="form-control" name="name" placeholder="Tên"></div>
+  <div class="col-md-3"><input class="form-control" type="email" name="email" placeholder="Email"></div>
+  <div class="col-md-2"><input class="form-control" name="password" placeholder="{{ tr("password") }}"></div>
+  <div class="col-md-2">
+    <select class="form-select" name="role"><option value="user">user</option><option value="admin">admin</option></select>
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" name="location_id">
+      {% for l in locations %}<option value="{{ l.id }}">{{ l.name }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-12"><button class="btn btn-success">{{ tr("add") }}</button></div>
+</form>
+<table class="table table-striped"><tr><th>ID</th><th>Tên</th><th>Email</th><th>Role</th><th>Địa điểm</th><th></th></tr>
+{% for u in users %}<tr><td>{{ u.id }}</td><td>{{ u.name }}</td><td>{{ u.email }}</td><td>{{ u.role }}</td><td>{{ u.location.name if u.location else "" }}</td>
+<td><a class="btn btn-sm btn-danger" href="/admin/users/{{ u.id }}/delete">{{ tr("delete") }}</a></td></tr>{% endfor %}</table>
+{% endblock %}

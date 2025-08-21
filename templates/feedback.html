@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("feedback") }}</h3>
+<form method="post" enctype="multipart/form-data" class="row g-3 mb-4">
+  <div class="col-md-6">
+    <label class="form-label">{{ tr("name") }}</label>
+    <input name="name" class="form-control" required>
+  </div>
+  <!-- <div class="col-md-6">
+    <label class="form-label">{{ tr("email") }}</label>
+    <input type="email" name="email" class="form-control">
+  </div> -->
+  <div class="col-md-3">
+  <label class="form-label">{{ tr("type") }}</label>
+  <select name="fb_type" class="form-select" required>
+    <option value="portion">Định lượng món ăn</option>
+    <option value="hygiene">Chất lượng vệ sinh</option>
+    <option value="service">Thái độ phục vụ</option>
+    <option value="improvement">Yêu cầu cải tiến</option>
+  </select>
+</div>
+  <div class="col-md-6">
+    <label class="form-label">{{ tr("title") }}</label>
+    <input name="title" class="form-control">
+  </div>
+  <!-- <div class="col-md-3">
+    <label class="form-label">{{ tr("rating") }}</label>
+    <input type="number" min="1" max="5" name="rating" class="form-control" value="5">
+  </div> -->
+  <div class="col-md-12">
+    <label class="form-label">{{ tr("content") }}</label>
+    <textarea name="message" class="form-control" rows="3"></textarea>
+  </div>
+  <!-- <div class="col-md-4">
+    <label class="form-label">{{ tr("place") }}</label>
+    <select name="location_id" class="form-select">
+      <option value="">--</option>
+      {% for l in locations %}<option value="{{ l.id }}">{{ l.name }}</option>{% endfor %}
+    </select>
+  </div> -->
+  <div class="col-md-4">
+    <label class="form-label">{{ tr("image") }}</label>
+    <input type="file" name="image" class="form-control" accept="image/*">
+  </div>
+  <div class="col-md-4 align-self-end">
+    <button class="btn btn-primary">{{ tr("submit") }}</button>
+  </div>
+</form>
+
+<!-- <h5 class="mt-4">{{ tr("public_posts") }}</h5>
+<div class="row g-3">
+  {% for f in feedbacks %}
+  <div class="col-md-6">
+    <div class="card h-100">
+      {% if f.image_path %}<img class="card-img-top" src="/static/{{ f.image_path }}">{% endif %}
+      <div class="card-body">
+        <h5 class="card-title">{{ f.title or f.fb_type|capitalize }}</h5>
+        <p class="card-text">{{ f.message }}</p>
+        <small class="text-muted">{{ f.name }} • {{ f.created_at.strftime("%Y-%m-%d") }}</small>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div> -->
+{% endblock %}

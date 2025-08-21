@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Quản lý Thực đơn Đặc biệt</h3>
+
+<!-- Form thêm món mới -->
+<form method="post" enctype="multipart/form-data" class="row g-3 mb-4">
+  <div class="col-md-4">
+    <label class="form-label">Tên món</label>
+    <input type="text" name="name" class="form-control" required>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Giá</label>
+    <input type="number" name="price" class="form-control">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Ảnh (16:9)</label>
+    <input type="file" name="image" class="form-control" accept="image/*">
+  </div>
+  <div class="col-md-12">
+    <label class="form-label">Mô tả</label>
+    <textarea name="description" class="form-control"></textarea>
+  </div>
+  <div class="col-md-12">
+    <button class="btn btn-success">Thêm món</button>
+  </div>
+</form>
+
+<!-- Danh sách món đặc biệt -->
+<div class="row">
+  {% for i in items %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 shadow-sm">
+        {% if i.image_path %}
+          <img src="/static/{{ i.image_path }}" class="card-img-top" style="aspect-ratio:16/9; object-fit:cover;">
+        {% else %}
+          <img src="https://via.placeholder.com/400x225?text=No+Image" class="card-img-top" style="aspect-ratio:16/9; object-fit:cover;">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ i.name }}</h5>
+          <p class="card-text text-muted small">{{ i.description }}</p>
+          <span class="badge bg-success">{{ i.price }} đ</span>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+          <a href="{{ url_for('admin_menu_special_edit', id=i.id) }}" class="btn btn-sm btn-warning">Sửa</a>
+          <form method="post" action="{{ url_for('admin_menu_special_delete', id=i.id) }}" 
+                onsubmit="return confirm('Xóa món này?');">
+            <button class="btn btn-sm btn-danger">Xóa</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-12 text-muted">Chưa có món đặc biệt nào</div>
+  {% endfor %}
+</div>
+
+{% endblock %}

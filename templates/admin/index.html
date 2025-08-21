@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("dashboard") }}</h3>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Góp ý</h5>
+        <div class="display-6">{{ count_voc }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Khen</h5>
+        <div class="display-6">{{ count_praise }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <h5>Đăng ký món</h5>
+        <div class="display-6">{{ count_orders }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 d-flex gap-2 flex-wrap">
+  <a class="btn btn-outline-primary" href="/admin/feedback">Quản lý góp ý/khen</a>
+  <a class="btn btn-outline-primary" href="/admin/menu_weekly">Thực đơn tuần</a>
+  <a class="btn btn-outline-primary" href="/admin/menu_special">Thực đơn đặc biệt</a>
+  <a class="btn btn-outline-primary" href="/admin/orders">{{ tr("orders") }}</a>
+  <a class="btn btn-outline-primary" href="/admin/users">{{ tr("users") }}</a>
+  <a class="btn btn-outline-primary" href="/admin/locations">{{ tr("locations") }}</a>
+</div>
+{% endblock %}

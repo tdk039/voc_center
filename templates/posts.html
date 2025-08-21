@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("public_posts") }}</h3>
+<style>
+  .table td, .table th {
+    word-wrap: break-word;
+    white-space: normal;
+    vertical-align: top;
+  }
+</style>
+
+{% set cat_map = {
+  'portion': 'Định lượng món ăn',
+  'hygiene': 'Chất lượng vệ sinh',
+  'service': 'Thái độ phục vụ',
+  'improvement': 'Yêu cầu cải tiến',
+  'voc': 'Góp ý',
+  'complaint': 'Phàn nàn',
+  'khen': 'Khen'
+} %}
+
+<!-- Chọn số kết quả / trang -->
+<form method="get" class="d-flex align-items-center gap-2 mb-3">
+  <label for="per_page" class="mb-0">Hiển thị mỗi trang:</label>
+  <select name="per_page" id="per_page" class="form-select w-auto" onchange="this.form.submit()">
+    {% set pp = request.args.get('per_page', '10') %}
+    <option value="5"  {% if pp=='5'  %}selected{% endif %}>5</option>
+    <option value="10" {% if pp=='10' %}selected{% endif %}>10</option>
+    <option value="20" {% if pp=='20' %}selected{% endif %}>20</option>
+    <option value="50" {% if pp=='50' %}selected{% endif %}>50</option>
+  </select>
+  <!-- giữ nguyên trang hiện tại khi đổi per_page -->
+  <input type="hidden" name="page" value="{{ posts.page }}">
+</form>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped align-middle text-wrap">
+    <thead class="table-success">
+      <tr>
+        <th style="width: 12%;">Thời gian</th>
+        <th style="width: 15%;">Người đánh giá</th>
+        <th style="width: 15%;">Loại góp ý</th>
+        <th style="width: 20%;">Tiêu đề</th>
+        <th style="width: 38%;">Nội dung</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in posts.items %}
+      <tr>
+        <td>{{ p.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ cat_map.get(p.fb_type, p.fb_type) }}</td>
+        <td>{{ p.title or '-' }}</td>
+        <td>{{ p.message or '-' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Thanh phân trang -->
+  <nav aria-label="Page navigation">
+    <ul class="pagination">
+      {% if posts.has_prev %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.prev_num }}&per_page={{ request.args.get('per_page', 10) }}">«</a>
+        </li>
+      {% endif %}
+
+      {% for p in posts.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          <li class="page-item {% if p == posts.page %}active{% endif %}">
+            <a class="page-link" href="?page={{ p }}&per_page={{ request.args.get('per_page', 10) }}">{{ p }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if posts.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ posts.next_num }}&per_page={{ request.args.get('per_page', 10) }}">»</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <!-- Nhập số trang thủ công -->
+  <!-- <form method="get" class="d-flex align-items-center mt-2">
+    <label for="page" class="me-2">Tới trang:</label>
+    <input type="number" min="1" max="{{ posts.pages }}" name="page" id="page"
+           class="form-control w-auto me-2" value="{{ posts.page }}">
+    <input type="hidden" name="per_page" value="{{ request.args.get('per_page', 10) }}">
+    <button type="submit" class="btn btn-outline-primary">Go</button>
+  </form> -->
+</div>
+
+{% endblock %}

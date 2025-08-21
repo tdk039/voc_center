@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welstory VOC Center</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{background:#f7fafc}
+    .navbar-brand{font-weight:700;color:#14532d!important}
+    .nav-link.active{font-weight:700;color:#14532d!important}
+    .hero{background:linear-gradient(135deg,#e8f5e9,#fff);border-radius:1rem}
+    .card-img-top{max-height:140px;object-fit:cover}
+  </style>
+  <style>
+      /* Xóa bullet trong dropdown bootstrap */
+      ul.dropdown-menu {
+        list-style: none !important;
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+      }
+      ul.dropdown-menu li {
+        list-style: none !important;
+      }
+      ul.dropdown-menu li::marker {
+        content: "" !important;
+      }
+      .navbar-nav .dropdown-menu li {
+  list-style: none !important;
+}
+
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+  <div class="container">
+    <!-- <a class="navbar-brand" href="/">{{ tr("Welstory VOC Center-") }}</a> -->
+     <a class="navbar-brand d-flex align-items-center" href="/">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="40" class="me-2">
+      VOC Center
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="nav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link {% if active=='feedback' %}active{% endif %}" href="/feedback">{{ tr("feedback") }}</a></li>
+        <li class="nav-item"><a class="nav-link {% if active=='praise' %}active{% endif %}" href="/praise">{{ tr("praise") }}</a></li>
+        <li class="nav-item"><a class="nav-link {% if active=='menu' %}active{% endif %}" href="/menu">{{ tr("menu") }}</a></li>
+        <li class="nav-item"><a class="nav-link {% if active=='order' %}active{% endif %}" href="/order">{{ tr("order") }}</a></li>
+        <li class="nav-item"><a class="nav-link {% if active=='posts' %}active{% endif %}" href="/posts">{{ tr("public_posts") }}</a></li>
+        {% if current_user() and current_user().role=='admin' %}
+        <li class="nav-item"><a class="nav-link {% if active=='admin' %}active{% endif %}" href="/admin">{{ tr("admin") }}</a></li>
+        {% endif %}
+      </ul>
+      <div class="d-flex align-items-center gap-2">
+        <!-- <a href="/lang/vi" class="btn btn-sm btn-outline-secondary">VI</a>
+        <a href="/lang/en" class="btn btn-sm btn-outline-secondary">EN</a>
+        <a href="/lang/ko" class="btn btn-sm btn-outline-secondary">KO</a> -->
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button" 
+            data-bs-toggle="dropdown" aria-expanded="false">
+            🌐 Ngôn ngữ
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+            <li><a class="dropdown-item" href="/lang/vi">🇻🇳 Tiếng Việt</a></li>
+            <li><a class="dropdown-item" href="/lang/en">🇺🇸 English</a></li>
+            <li><a class="dropdown-item" href="/lang/ko">🇰🇷 한국어</a></li>
+          </ul>
+        </div>
+        {% if current_user() %}
+          <span class="text-muted small me-2">{{ current_user().email }}</span>
+          <a class="btn btn-sm btn-outline-success" href="/logout">{{ tr("logout") }}</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-success" href="/login">{{ tr("login") }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="container my-4">
+  {% with messages = get_flashed_messages() %}{% if messages %}
+  <div class="alert alert-success">{{ messages[0] }}</div>
+  {% endif %}{% endwith %}
+  {% block content %}{% endblock %}
+</div>
+<!-- Footer -->
+<footer class="bg-white text-center text-muted py-3 mt-5 border-top">
+  <div class="container">
+    <p class="mb-1">&copy; 2025 Welstory VOC Center</p>
+    <p class="small mb-0">
+      <a href="https://www.welstory.vn/contents/aboutus/welstory.html" 
+         target="_blank" 
+         class="text-muted text-decoration-none me-3">Giới thiệu</a>
+      <a href="https://www.welstory.vn/contents/contactus/offices_v01.html" 
+         target="_blank" 
+         class="text-muted text-decoration-none">Liên hệ</a>
+    </p>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

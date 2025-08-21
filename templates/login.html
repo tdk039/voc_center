@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("login") }}</h3>
+<form method="post" class="col-md-5">
+  <div class="mb-3"><label class="form-label">{{ tr("email") }}</label><input type="email" class="form-control" name="email" required></div>
+  <div class="mb-3"><label class="form-label">{{ tr("password") }}</label><input type="password" class="form-control" name="password" required></div>
+  <button class="btn btn-success">{{ tr("login") }}</button>
+</form>
+{% endblock %}

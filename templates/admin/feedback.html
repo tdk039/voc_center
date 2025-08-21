@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Quản trị Feedback</h3>
+
+<form method="get" class="row g-2 align-items-end mb-3">
+  <div class="col-md-2">
+    <label class="form-label">Loại góp ý</label>
+    <select name="type" class="form-select">
+      <option value="">-- Tất cả --</option>
+      <option value="portion" {% if request.args.get('type')=='portion' %}selected{% endif %}>Định lượng món ăn</option>
+      <option value="hygiene" {% if request.args.get('type')=='hygiene' %}selected{% endif %}>Chất lượng vệ sinh</option>
+      <option value="service" {% if request.args.get('type')=='service' %}selected{% endif %}>Thái độ phục vụ</option>
+      <option value="improvement" {% if request.args.get('type')=='improvement' %}selected{% endif %}>Yêu cầu cải tiến</option>
+      <option value="voc" {% if request.args.get('type')=='voc' %}selected{% endif %}>Góp ý</option>
+      <option value="complaint" {% if request.args.get('type')=='complaint' %}selected{% endif %}>Phàn nàn</option>
+      <option value="khen" {% if request.args.get('type')=='khen' %}selected{% endif %}>Khen</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Từ khoá</label>
+    <input type="text" name="kw" value="{{ request.args.get('kw','') }}" class="form-control" placeholder="Tìm kiếm...">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Từ ngày</label>
+    <input type="date" name="start" value="{{ request.args.get('start','') }}" class="form-control">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Đến ngày</label>
+    <input type="date" name="end" value="{{ request.args.get('end','') }}" class="form-control">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Hiển thị /trang</label>
+    <select name="per_page" class="form-select">
+      {% set pp = request.args.get('per_page','20') %}
+      <option value="10" {% if pp=='10' %}selected{% endif %}>10</option>
+      <option value="20" {% if pp=='20' %}selected{% endif %}>20</option>
+      <option value="50" {% if pp=='50' %}selected{% endif %}>50</option>
+    </select>
+  </div>
+  <div class="col-md-4 d-flex gap-2">
+    <button class="btn btn-primary">Lọc</button>
+    <a class="btn btn-secondary" href="{{ url_for('admin_feedback') }}">Bỏ lọc</a>
+    <a class="btn btn-outline-success" href="{{ url_for('admin_feedback_export', format='excel', **request.args) }}">Xuất Excel</a>
+    <a class="btn btn-outline-danger" href="{{ url_for('admin_feedback_export', format='pdf', **request.args) }}">Xuất PDF</a>
+  </div>
+</form>
+
+{% set cat_map = {
+  'portion': 'Định lượng món ăn',
+  'hygiene': 'Chất lượng vệ sinh',
+  'service': 'Thái độ phục vụ',
+  'improvement': 'Yêu cầu cải tiến',
+  'voc': 'Góp ý',
+  'complaint': 'Phàn nàn',
+  'khen': 'Khen'
+} %}
+
+<div class="table-responsive">
+  <table class="table table-bordered table-striped align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Thời gian</th>
+        <th>Người gửi</th>
+        <th>Loại</th>
+        <th>Tiêu đề</th>
+        <th>Nội dung</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows.items %}
+      <tr>
+        <td>{{ r.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ cat_map.get(r.fb_type, r.fb_type) }}</td>
+        <td>{{ r.title or '-' }}</td>
+        <td>{{ r.message or '-' }}</td>
+        <td>{{ 'Công khai' if r.is_public else 'Ẩn' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('admin_feedback_toggle', id=r.id, **request.args) }}" class="d-inline">
+            <button class="btn btn-sm btn-warning">
+              {{ 'Ẩn' if r.is_public else 'Hiện' }}
+            </button>
+          </form>
+          <form method="post" action="{{ url_for('admin_feedback_delete', id=r.id, **request.args) }}" class="d-inline"
+                onsubmit="return confirm('Xóa phản hồi này?');">
+            <button class="btn btn-sm btn-danger">Xóa</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Phân trang -->
+<nav>
+  <ul class="pagination">
+    {% if rows.has_prev %}
+      <li class="page-item"><a class="page-link" href="{{ url_for('admin_feedback', page=rows.prev_num, **request.args) }}">«</a></li>
+    {% endif %}
+    {% for p in rows.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        <li class="page-item {% if p==rows.page %}active{% endif %}">
+          <a class="page-link" href="{{ url_for('admin_feedback', page=p, **request.args) }}">{{ p }}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+    {% if rows.has_next %}
+      <li class="page-item"><a class="page-link" href="{{ url_for('admin_feedback', page=rows.next_num, **request.args) }}">»</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

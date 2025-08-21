@@ -1,0 +1,10 @@
+/* Bỏ dấu chấm trước item trong dropdown */
+.dropdown-menu li {
+  list-style-type: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+.dropdown-menu li::marker {
+  content: none !important;
+}
+

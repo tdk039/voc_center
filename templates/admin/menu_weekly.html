@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">Quản lý Thực đơn tuần</h3>
+
+<form method="post" enctype="multipart/form-data" class="mb-4">
+  <div class="row g-3 align-items-end">
+    <div class="col-md-6">
+      <label class="form-label">Ảnh thực đơn tuần (16:9)</label>
+      <input type="file" name="image" class="form-control" accept="image/*" onchange="previewImage(event)" required>
+    </div>
+    <div class="col-md-3">
+      <button class="btn btn-success">Upload / Thay thế</button>
+    </div>
+  </div>
+</form>
+
+<div id="preview" class="mb-4"></div>
+
+{% if weekly and weekly.image_path %}
+  <h5>Ảnh hiện tại:</h5>
+  <a href="{{ url_for('static', filename=weekly.image_path) }}" target="_blank">
+    <img src="{{ url_for('static', filename=weekly.image_path) }}" 
+         class="img-fluid rounded shadow" style="max-width:600px; aspect-ratio:16/9; object-fit:cover;">
+  </a>
+{% else %}
+  <div class="text-muted">Chưa có ảnh thực đơn tuần</div>
+{% endif %}
+
+<script>
+function previewImage(event) {
+  let preview = document.getElementById('preview');
+  preview.innerHTML = "";
+  let file = event.target.files[0];
+  if(file){
+    let img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.className = "img-fluid rounded shadow mt-3";
+    img.style.maxWidth = "600px";
+    img.style.aspectRatio = "16/9";
+    img.style.objectFit = "cover";
+    preview.appendChild(img);
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("menu") }}</h3>
+
+<!-- Dropdown chọn loại menu -->
+<div class="mb-4">
+  <form method="get">
+    <select name="view" class="form-select w-auto d-inline" onchange="this.form.submit()">
+      <option value="weekly" {% if view=='weekly' %}selected{% endif %}>{{ tr("week_menu") }}</option>
+      <option value="special" {% if view=='special' %}selected{% endif %}>Thực đơn đặc biệt</option>
+    </select>
+  </form>
+</div>
+
+<!-- Hiển thị thực đơn tuần -->
+{% if view == 'weekly' %}
+  <h5 class="mb-2">{{ tr("week_menu") }}</h5>
+  {% if weekly and weekly.image_path %}
+    <a href="/static/{{ weekly.image_path }}" target="_blank">
+      <img src="/static/{{ weekly.image_path }}" class="img-fluid rounded shadow" style="aspect-ratio:16/9; object-fit:cover;">
+    </a>
+  {% else %}
+    <div class="text-muted">Chưa có thực đơn tuần</div>
+  {% endif %}
+{% endif %}
+
+<!-- Hiển thị thực đơn đặc biệt -->
+{% if view == 'special' %}
+  <h5 class="mb-2">Thực đơn đặc biệt</h5>
+  <div class="row g-3">
+    {% for i in specials %}
+    <div class="col-md-4 col-lg-3">
+      <div class="card h-100 shadow-sm">
+        {% if i.image_path %}
+          <img src="/static/{{ i.image_path }}" class="card-img-top" style="aspect-ratio:16/9; object-fit:cover;">
+        {% endif %}
+        <div class="card-body">
+          <h6 class="card-title">{{ i.name }}</h6>
+          <p class="card-text text-muted small">{{ i.description }}</p>
+        </div>
+        <div class="card-footer text-end">
+          <span class="badge bg-success">{{ i.price }} {{ tr("price_vnd") }}</span>
+        </div>
+      </div>
+    </div>
+    {% else %}
+      <div class="text-muted">Chưa có thực đơn đặc biệt</div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

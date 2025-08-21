@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("praise") }}</h3>
+<form method="post" class="row g-3 mb-4">
+  <div class="col-md-6"><label class="form-label">{{ tr("name") }}</label><input name="name" class="form-control" required></div>
+  <!-- <div class="col-md-6"><label class="form-label">{{ tr("email") }}</label><input type="email" name="email" class="form-control"></div> -->
+  <div class="col-md-9"><label class="form-label">{{ tr("title") }}</label><input name="title" class="form-control"></div>
+  <!-- <div class="col-md-3"><label class="form-label">{{ tr("place") }}</label>
+    <select name="location_id" class="form-select">{% for l in locations %}<option value="{{ l.id }}">{{ l.name }}</option>{% endfor %}</select>
+  </div> -->
+  <div class="col-12"><label class="form-label">{{ tr("content") }}</label><textarea name="message" class="form-control" rows="3"></textarea></div>
+  <div class="col-12"><button class="btn btn-primary">{{ tr("submit") }}</button></div>
+</form>
+
+<!-- <div class="list-group">
+  {% for f in feedbacks %}
+  <a class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ f.title or "Khen" }}</h5>
+      <small class="text-muted">{{ f.created_at.strftime("%Y-%m-%d") }}</small>
+    </div>
+    <p class="mb-1">{{ f.message }}</p>
+    <small class="text-muted">{{ f.name }}</small>
+  </a>
+  {% endfor %}
+</div> -->
+{% endblock %}

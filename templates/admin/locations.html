@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="mb-3">{{ tr("locations") }}</h3>
+<form method="post" class="row g-2 mb-3">
+  <div class="col-md-6"><input class="form-control" name="name" placeholder="Tên địa điểm"></div>
+  <div class="col-md-2"><button class="btn btn-success">{{ tr("add") }}</button></div>
+</form>
+<table class="table table-bordered"><tr><th>ID</th><th>Tên</th><th></th></tr>
+{% for l in locations %}<tr><td>{{ l.id }}</td><td>{{ l.name }}</td><td><a class="btn btn-sm btn-danger" href="/admin/locations/{{ l.id }}/delete">{{ tr("delete") }}</a></td></tr>{% endfor %}
+</table>
+{% endblock %}

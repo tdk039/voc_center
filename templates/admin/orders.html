@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- <h3 class="mb-3">{{ tr("orders") }}</h3> -->
+<h3 class="mb-3">Đơn đăng ký thực đơn đặc biệt</h3>
+
+<!-- Bộ lọc -->
+<form class="row g-2 mb-3">
+  <div class="col-md-3">
+    <input type="text" class="form-control" name="kw" value="{{ kw }}" placeholder="Họ tên / Mã NV">
+  </div>
+  <!-- Ẩn lọc địa điểm (giữ code để sau dùng lại) -->
+  {# 
+  <div class="col-md-3">
+    <select name="location_id" class="form-select">
+      <option value="">-- Địa điểm --</option>
+      {% for l in locations %}
+        <option value="{{ l.id }}" {% if loc_id==l.id %}selected{% endif %}>{{ l.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  #}
+
+  <div class="col-md-3">
+    <select name="item_id" class="form-select">
+      <option value="">-- Lọc theo món --</option>
+      {% for i in items %}
+        <option value="{{ i.id }}" {% if item_id==i.id %}selected{% endif %}>{{ i.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <input type="date" class="form-control" name="date" value="{{ date }}">
+  </div>
+  <div class="col-md-2">
+    <select name="per_page" class="form-select">
+      {% for n in [10,20,50,100] %}
+      <option value="{{n}}" {% if rows.per_page==n %}selected{% endif %}>{{n}} / trang</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-1">
+  <button class="btn btn-primary w-100">{{ tr("filter") }}</button>
+</div>
+</form>
+
+<!-- Danh sách đơn -->
+ <div class="d-flex justify-content-between align-items-center mb-2">
+  <h5></h5>
+  <a class="btn btn-success"
+     href="{{ url_for('admin_orders_export', kw=kw, item_id=item_id, date=date) }}">
+     {{ tr("export_excel") }}
+  </a>
+</div>
+<table class="table table-bordered table-sm">
+  <thead>
+    <tr>
+      <th>ID</th><th>Họ tên</th><th>Mã NV</th>
+      <!-- <th>Địa điểm</th> -->  <!-- Ẩn cột địa điểm -->
+      <th>Món</th><th>Ngày đăng ký</th>
+      <!-- <th>Thời gian tạo</th> -->
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in rows.items %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.customer_name }}</td>
+      <td>{{ o.employee_code }}</td>
+      <!-- <td>{{ o.location.name if o.location else "" }}</td> -->
+      <td>{{ o.item.name if o.item else "" }}</td>
+      <td>{{ o.created_at.date() }}</td>
+      <!-- <td>{{ o.created_at.strftime("%H:%M") }}</td> -->
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="text-center text-muted">Không có dữ liệu</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Phân trang -->
+<nav>
+  <ul class="pagination">
+    {% if rows.has_prev %}
+    <li class="page-item"><a class="page-link" href="?page={{ rows.prev_num }}&kw={{kw}}&item_id={{item_id}}&date={{date}}&per_page={{rows.per_page}}">«</a></li>
+    {% endif %}
+    {% for p in rows.iter_pages() %}
+      {% if p %}
+        <li class="page-item {% if p==rows.page %}active{% endif %}">
+          <a class="page-link" href="?page={{p}}&kw={{kw}}&item_id={{item_id}}&date={{date}}&per_page={{rows.per_page}}">{{p}}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+      {% endif %}
+    {% endfor %}
+    {% if rows.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ rows.next_num }}&kw={{kw}}&item_id={{item_id}}&date={{date}}&per_page={{rows.per_page}}">»</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+<!-- Tổng món đặc biệt trong ngày -->
+<h5 class="mt-4">Tổng orders món ăn đặc biệt của ngày ({{ date }})</h5>
+<ul>
+  {% for name, qty in totals_map.items() %}
+    <li>{{ name }}: <strong>{{ qty }}</strong> suất</li>
+  {% else %}
+    <li class="text-muted">Chưa có đơn nào hôm nay</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
